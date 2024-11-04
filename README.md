@@ -1,5 +1,9 @@
 # advent-of-code
 
+## Install
+
+`npm install`
+
 ## Create of specific puzzle folder
 
 `npm run generate <year> <day> <puzzle>`
