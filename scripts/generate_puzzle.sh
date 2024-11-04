@@ -44,6 +44,7 @@ touch $indexFile
 touch $inputFile
 
 cat template/index.run.ts > $indexFile
+cat template/input.txt > $inputFile
 
 git add "$indexFile"
 

@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "lib": ["es2021"],
+    "lib": ["es6"],
     "target": "ES2022",
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "moduleDetection": "force"
   }
 }
