@@ -27,6 +27,13 @@ paddedDay=$(printf '%02d\n' "$day")
 
 runFile="$year/day$paddedDay-$puzzle/index.run.ts"
 
+if [ ! -d "$runFile" ]; then
+    echo "Run file for puzzle $year/day$paddedDay-$puzzle doesn't exist!"
+    exit 1;
+fi
+
 echo "Running file: $runFile\n"
 
 ts-node "$runFile"
+
+exit 0
