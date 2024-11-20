@@ -1,0 +1,1 @@
+Copy the input from AoC here.

@@ -38,14 +38,23 @@ else
 fi
 
 indexFile="$year/day$paddedDay-$puzzle/index.run.ts"
+testFile="$year/day$paddedDay-$puzzle/index.test.ts"
 inputFile="$year/day$paddedDay-$puzzle/input.txt"
+inputExampleFile="$year/day$paddedDay-$puzzle/inputExample.txt"
+inputExampleResultFile="$year/day$paddedDay-$puzzle/inputExampleResult.txt"
 
 touch $indexFile
+touch $testFile
 touch $inputFile
+touch $inputExampleFile
+touch $inputExampleResultFile
 
 cat template/index.run.ts > $indexFile
+sed -e "s/<<year>>/$year/" -e "s/<<day>>/$paddedDay/" -e "s/<<puzzle>>/$puzzle/" template/index.test.ts > $testFile
 cat template/input.txt > $inputFile
+cat template/inputExample.txt > $inputExampleFile
+cat template/inputExampleResult.txt > $inputExampleResultFile
 
-git add "$indexFile"
+git add "$indexFile" "$testFile"
 
 exit 0
