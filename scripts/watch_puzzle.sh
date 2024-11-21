@@ -25,10 +25,10 @@ fi
 
 paddedDay=$(printf '%02d\n' "$day")
 
-testFile="$year/day$paddedDay-$puzzle/index.test.ts"
+testFile="$year/day-$paddedDay/puzzle-$puzzle/index.test.ts"
 
 if [ ! -f "$testFile" ]; then
-    echo "Test file for puzzle $year/day$paddedDay-$puzzle doesn't exist!"
+    echo "Test file for puzzle $year/day-$paddedDay/puzzle-$puzzle doesn't exist!"
     exit 1;
 fi
 

@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const rawData = fs.readFileSync(__dirname + '/input.txt');
+const rawData = fs.readFileSync(__dirname + '/../input.txt');
 
 export const processData = (data: Buffer): any => {
     return data.toString();
@@ -8,7 +8,7 @@ export const processData = (data: Buffer): any => {
 
 const processedInput = processData(rawData);
 
-export const solution = (input: string): any => {
+export const solution = (input: any): any => {
     console.log('Input: ', input);
     return 'Result';
 };

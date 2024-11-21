@@ -30,30 +30,37 @@ then
   mkdir "$year"
 fi
 
-if [ ! -d "$year/day$paddedDay-$puzzle" ]; then
-  mkdir "$year/day$paddedDay-$puzzle"
+if [ ! -d "$year/day-$paddedDay" ]; then
+  mkdir "$year/day-$paddedDay"
+fi
+
+if [ ! -d "$year/day-$paddedDay/puzzle-$puzzle" ]; then
+  mkdir "$year/day-$paddedDay/puzzle-$puzzle"
 else
   echo "Puzzle already exists for this day!"
   exit 1
 fi
 
-indexFile="$year/day$paddedDay-$puzzle/index.run.ts"
-testFile="$year/day$paddedDay-$puzzle/index.test.ts"
-inputFile="$year/day$paddedDay-$puzzle/input.txt"
-inputExampleFile="$year/day$paddedDay-$puzzle/inputExample.txt"
-inputExampleResultFile="$year/day$paddedDay-$puzzle/inputExampleResult.txt"
+indexFile="$year/day-$paddedDay/puzzle-$puzzle/index.run.ts"
+testFile="$year/day-$paddedDay/puzzle-$puzzle/index.test.ts"
+inputExampleFile="$year/day-$paddedDay/puzzle-$puzzle/inputExample.txt"
+inputExampleResultFile="$year/day-$paddedDay/puzzle-$puzzle/inputExampleResult.txt"
+inputFile="$year/day-$paddedDay/input.txt"
 
 touch $indexFile
 touch $testFile
-touch $inputFile
 touch $inputExampleFile
 touch $inputExampleResultFile
 
+if [ ! -f "$inputFile" ]; then
+  touch $inputFile
+fi
+
 cat template/index.run.ts > $indexFile
 sed -e "s/<<year>>/$year/" -e "s/<<day>>/$paddedDay/" -e "s/<<puzzle>>/$puzzle/" template/index.test.ts > $testFile
-cat template/input.txt > $inputFile
 cat template/inputExample.txt > $inputExampleFile
 cat template/inputExampleResult.txt > $inputExampleResultFile
+cat template/input.txt > $inputFile
 
 git add "$indexFile" "$testFile"
 

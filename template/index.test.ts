@@ -10,6 +10,6 @@ describe('Puzzle <<puzzle>> from day <<day>> of the year <<year>>', () => {
         const input = processData(exampleData);
         const result = exampleResult.toString();
 
-        expect(solution(input)).toStrictEqual(result);
+        expect(solution(input).toString()).toStrictEqual(result);
     });
 });
