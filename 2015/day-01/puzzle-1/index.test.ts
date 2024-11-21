@@ -1,9 +1,9 @@
 import fs from 'fs';
 
-import { processData, solution } from './index.run';
+import { processData, solution } from './solution';
 
-const exampleData = fs.readFileSync(__dirname + '/inputExample.txt');
-const exampleResult = fs.readFileSync(__dirname + '/inputExampleResult.txt');
+const exampleData = fs.readFileSync(__dirname + '/example-input.txt');
+const exampleResult = fs.readFileSync(__dirname + '/example-result.txt');
 
 describe('Puzzle 1 from day 01 of the year 2015', () => {
     it('returns same result as AoC example result', () => {
