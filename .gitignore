@@ -1,3 +1,5 @@
+.idea
+node_modules
 **/example-input.txt
 **/example-result.txt
 **/input.txt

@@ -18,9 +18,9 @@ Example: `npm run generate 2024 3 2`
 
 ## Use watch mode for puzzle
 
-Copy the example input of the puzzle to the `inputExample.txt` file and the example result to the `inputExampleResult.txt` file.
+Copy the example input of the puzzle to the `example-input.txt` file and the example result to the `example-result.txt` file.
 
-Then, run the following command and develop your solution until the test passes.
+Then, run the following command and develop your solution in the `solution.ts` file until the test passes.
 
 `npm run watch <year> <day> <puzzle>`
 
