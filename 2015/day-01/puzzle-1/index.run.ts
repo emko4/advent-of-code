@@ -1,10 +1,14 @@
 const fs = require('fs');
 
-const data = fs.readFileSync(__dirname + '/input.txt');
+const rawData = fs.readFileSync(__dirname + '/../input.txt');
 
-const input = data.toString();
+export const processData = (data: Buffer): string => {
+    return data.toString();
+};
 
-const solution = (input: string): number => {
+const processedInput = processData(rawData);
+
+export const solution = (input: string): number => {
     const { left, right } = input.split('').reduce(
         ({ left, right }, char) => ({
             left: char === '(' ? left + 1 : left,
@@ -17,6 +21,6 @@ const solution = (input: string): number => {
 };
 
 console.time('Runtime');
-const result = solution(input);
+const result = solution(processedInput);
 console.timeEnd('Runtime');
 console.log('Result: ', result);

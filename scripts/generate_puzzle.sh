@@ -52,15 +52,15 @@ touch $testFile
 touch $inputExampleFile
 touch $inputExampleResultFile
 
-if [ ! -f "$inputFile" ]; then
-  touch $inputFile
-fi
-
 cat template/index.run.ts > $indexFile
 sed -e "s/<<year>>/$year/" -e "s/<<day>>/$paddedDay/" -e "s/<<puzzle>>/$puzzle/" template/index.test.ts > $testFile
 cat template/inputExample.txt > $inputExampleFile
 cat template/inputExampleResult.txt > $inputExampleResultFile
-cat template/input.txt > $inputFile
+
+if [ ! -f "$inputFile" ]; then
+  touch $inputFile
+  cat template/input.txt > $inputFile
+fi
 
 git add "$indexFile" "$testFile"
 
