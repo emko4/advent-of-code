@@ -1,2 +1,6 @@
-**/input*.txt
-!template/input*.txt
+**/example-input.txt
+**/example-result.txt
+**/input.txt
+!template/example-input.txt
+!template/example-result.txt
+!template/input.txt

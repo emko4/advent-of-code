@@ -43,25 +43,28 @@ fi
 
 indexFile="$year/day-$paddedDay/puzzle-$puzzle/index.run.ts"
 testFile="$year/day-$paddedDay/puzzle-$puzzle/index.test.ts"
-inputExampleFile="$year/day-$paddedDay/puzzle-$puzzle/inputExample.txt"
-inputExampleResultFile="$year/day-$paddedDay/puzzle-$puzzle/inputExampleResult.txt"
+exampleInputFile="$year/day-$paddedDay/puzzle-$puzzle/example-input.txt"
+exampleResultFile="$year/day-$paddedDay/puzzle-$puzzle/example-result.txt"
+solutionFile="$year/day-$paddedDay/puzzle-$puzzle/solution.ts"
 inputFile="$year/day-$paddedDay/input.txt"
 
 touch $indexFile
 touch $testFile
-touch $inputExampleFile
-touch $inputExampleResultFile
+touch $exampleInputFile
+touch $exampleResultFile
+touch $solutionFile
 
 cat template/index.run.ts > $indexFile
 sed -e "s/<<year>>/$year/" -e "s/<<day>>/$paddedDay/" -e "s/<<puzzle>>/$puzzle/" template/index.test.ts > $testFile
-cat template/inputExample.txt > $inputExampleFile
-cat template/inputExampleResult.txt > $inputExampleResultFile
+cat template/example-input.txt > $exampleInputFile
+cat template/example-result.txt > $exampleResultFile
+cat template/solution.ts > $solutionFile
 
 if [ ! -f "$inputFile" ]; then
   touch $inputFile
   cat template/input.txt > $inputFile
 fi
 
-git add "$indexFile" "$testFile"
+git add "$indexFile" "$testFile" "$solutionFile"
 
 exit 0
