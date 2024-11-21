@@ -32,6 +32,8 @@ Example: `npm run watch 2024 3 2`
 
 ## Get the result of puzzle
 
+Copy the input of the puzzle to the `input.txt` file (same for all puzzles of the day).
+
 Once you have the correct solution from watch mode, run it with the following command to get your answer!
 
 `npm run result <year> <day> <puzzle>`
