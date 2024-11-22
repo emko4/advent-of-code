@@ -6,6 +6,8 @@ Not surprisingly, to start off, install the dependencies
 
 `npm install`
 
+And `postinstall` will create all the missing `txt` files that should not be pushed to the repository.
+
 ## Create puzzle folder
 
 `npm run generate <year> <day> <puzzle>`

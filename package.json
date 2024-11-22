@@ -4,7 +4,9 @@
   "scripts": {
     "generate": "./scripts/generate_puzzle.sh",
     "watch": "./scripts/watch_puzzle.sh",
-    "result": "./scripts/get_result.sh"
+    "result": "./scripts/get_result.sh",
+    "generate-txt": "./scripts/generate_txt_files.sh",
+    "postinstall": "npm run generate-txt"
   },
   "repository": {
     "type": "git",
