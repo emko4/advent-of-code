@@ -6,6 +6,7 @@
     "watch": "./scripts/watch_puzzle.sh",
     "result": "./scripts/get_result.sh",
     "generate-txt": "./scripts/generate_txt_files.sh",
+    "performance": "./scripts/checkPerformance.sh",
     "postinstall": "npm run generate-txt"
   },
   "repository": {
@@ -16,6 +17,7 @@
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "@types/jest": "^29.5.14",
+    "bun": "^1.1.38",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
@@ -25,7 +27,6 @@
     "jest-cli": "^29.7.0",
     "prettier": "^3.3.3",
     "ts-jest": "^29.2.5",
-    "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   }
 }

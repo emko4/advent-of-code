@@ -34,6 +34,6 @@ fi
 
 echo "Running file: $runFile\n"
 
-ts-node "$runFile"
+bun "$runFile"
 
 exit 0

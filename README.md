@@ -12,11 +12,12 @@ And `postinstall` will create all the missing `txt` files that should not be pus
 
 `npm run generate <year> <day> <puzzle>`
 
-- year   - AoC year in `yyyy` format
-- day    - number of day, number is automatically padded with 0
-- puzzle - 1 or 2, optional parameter - 1 is default value
+- **year**: The Advent of Code year, in `yyyy` format
+- **day**: The day number, automatically zero-padded if necessary
+- **puzzle**: Either `1` or `2`. This is an optional parameter; the default value is `1`.
 
-Example: `npm run generate 2024 3 2`
+**Example:**
+- `npm run generate 2024 3 2`
 
 ## Use watch mode for puzzle
 
@@ -26,11 +27,12 @@ Then, run the following command and develop your solution in the `solution.ts` f
 
 `npm run watch <year> <day> <puzzle>`
 
-- year   - AoC year in `yyyy` format
-- day    - number of day, number is automatically padded with 0
-- puzzle - 1 or 2, optional parameter - 1 is default value
+- **year**: The Advent of Code year, in `yyyy` format
+- **day**: The day number, automatically zero-padded if necessary
+- **puzzle**: Either `1` or `2`. This is an optional parameter; the default value is `1`.
 
-Example: `npm run watch 2024 3 2`
+**Example:**
+- `npm run watch 2024 3 2`
 
 ## Get the result of puzzle
 
@@ -40,8 +42,23 @@ Once you have the correct solution from watch mode, run it with the following co
 
 `npm run result <year> <day> <puzzle>`
 
-- year   - AoC year in `yyyy` format
-- day    - number of day, number is automatically padded with 0
-- puzzle - 1 or 2, optional parameter - 1 is default value
+- **year**: The Advent of Code year, in `yyyy` format
+- **day**: The day number, automatically zero-padded if necessary
+- **puzzle**: Either `1` or `2`. This is an optional parameter; the default value is `1`.
 
-Example: `npm run result 2024 3 2`
+**Example:**
+- `npm run result 2024 3 2`
+
+## Get the performance of puzzle
+
+This command uses the `hyperfine` benchmarking [tool](https://github.com/sharkdp/hyperfine) under the hood, so make sure it is installed.
+
+`npm run performance <year> <day> <puzzle>`
+
+- **year**: The Advent of Code year, in `yyyy` format
+- **day**: The day number, automatically zero-padded if necessary
+- **puzzle**: Either `1` or `2`. This is an optional parameter; if omitted, both puzzles will be checked
+
+**Examples:**
+- `npm run performance 2024 3 2`
+- `npm run performance 2024 3`
