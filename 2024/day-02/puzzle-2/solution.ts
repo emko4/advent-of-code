@@ -30,11 +30,13 @@ export const solution = (input: number[][]): number => {
         if (isSafe(line)) return acc + 1;
 
         const isSafeWithBadLevel = line.some((number, index) => {
-            const lineWithoutLevel = line.filter((n, lIndex) => index !== lIndex);
+            const lineWithoutLevel = line.filter((lineNumber, lineIndex) => index !== lineIndex);
 
             return isSafe(lineWithoutLevel);
         });
 
-        return acc + (isSafeWithBadLevel ? 1 : 0);
+        if (isSafeWithBadLevel) return acc + 1;
+
+        return acc;
     }, 0);
 };

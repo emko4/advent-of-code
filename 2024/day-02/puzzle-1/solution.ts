@@ -27,6 +27,8 @@ const isSafe = (input: number[]): boolean => {
 
 export const solution = (input: number[][]): number => {
     return input.reduce((acc, line) => {
-        return acc + (isSafe(line) ? 1 : 0);
+        if (isSafe(line)) return acc + 1;
+
+        return acc;
     }, 0);
 };
