@@ -3,9 +3,20 @@ export const processData = (data: Buffer): string => {
 };
 
 export const solution = (input: string): number => {
-    return [...input.matchAll(/mul\(\d+,\d+\)/g)]
+    let isDo = true;
+
+    return [...input.matchAll(/mul\(\d+,\d+\)|don't\(\)|do\(\)/g)]
+        .map((match) => match[0])
+        .filter((match) => {
+            if (match === 'do()' || match === "don't()") {
+                isDo = match === 'do()';
+                return false;
+            }
+
+            return isDo;
+        })
         .map((match) =>
-            match[0]
+            match
                 .replace(/[mul()]/g, '')
                 .split(',')
                 .map(Number),
