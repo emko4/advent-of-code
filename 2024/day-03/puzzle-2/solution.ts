@@ -1,5 +1,5 @@
 export const processData = (data: Buffer): string => {
-    return data.toString();
+    return data.toString().split('\n').join('');
 };
 
 export const solution = (input: string): number => {
