@@ -1,4 +1,4 @@
-type Map = Record<number, number[]>;
+type Map = Record<number, Set<number>>;
 type Update = number[];
 
 type Input = { map: Map; updates: Update[] };
@@ -11,8 +11,8 @@ export const processData = (data: Buffer): Input => {
             .split('\n')
             .map((tuple) => tuple.split('|').map(Number))
             .reduce((acc, [key, value]) => {
-                return { ...acc, [key]: [...(acc[key] || []), value] };
-            }, {}),
+                return { ...acc, [key]: acc[key] ? acc[key].add(value) : new Set([value]) };
+            }, {} as Map),
         updates: updates.split('\n').map((line) => line.split(',').map(Number)),
     };
 };
@@ -20,9 +20,8 @@ export const processData = (data: Buffer): Input => {
 const isUpdateValid = (map: Map, update: Update): boolean => {
     return update.every((number, index) => {
         const usedNumbers = new Set(update.slice(0, index));
-        const mustBeBefore = new Set(map[number]);
+        const mustBeBefore = map[number] || new Set();
 
-        // @ts-ignore
         return usedNumbers.intersection(mustBeBefore).size === 0;
     });
 };

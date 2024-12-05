@@ -1,4 +1,4 @@
-type Map = Record<number, number[]>;
+type Map = Record<number, Set<number>>;
 type Update = number[];
 
 type Input = { map: Map; updates: Update[] };
@@ -11,8 +11,8 @@ export const processData = (data: Buffer): Input => {
             .split('\n')
             .map((tuple) => tuple.split('|').map(Number))
             .reduce((acc, [key, value]) => {
-                return { ...acc, [key]: [...(acc[key] || []), value] };
-            }, {}),
+                return { ...acc, [key]: acc[key] ? acc[key].add(value) : new Set([value]) };
+            }, {} as Map),
         updates: updates.split('\n').map((line) => line.split(',').map(Number)),
     };
 };
@@ -20,15 +20,16 @@ export const processData = (data: Buffer): Input => {
 const correctInvalidUpdate = (map: Map, update: Update): Update => {
     return update.reduce((acc, number, index) => {
         const usedNumbers = new Set(acc.slice(0, index));
-        const mustBeBefore = new Set(map[number]);
+        const mustBeBefore = map[number] || new Set();
 
-        // @ts-ignore
-        const intersection = usedNumbers.intersection(mustBeBefore) as Set;
+        const intersection = usedNumbers.intersection(mustBeBefore);
 
+        // update is correct for now
         if (intersection.size === 0) {
             return [...acc, number];
         }
 
+        // find correct index for current number
         let correctIndex = acc.length;
         for (let i = acc.length - 1; i >= 0; i--) {
             if (mustBeBefore.has(acc[i])) correctIndex = i;
