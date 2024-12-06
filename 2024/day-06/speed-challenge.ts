@@ -1,3 +1,9 @@
+import fs from 'fs';
+
+const filePath = process.argv[2];
+
+const rawData = fs.readFileSync(__dirname + '/' + filePath);
+
 type Place = '.' | '#';
 type Map = Place[][];
 type Direction = [0, -1] | [1, 0] | [0, 1] | [-1, 0];
@@ -140,3 +146,8 @@ export const solution = ({ map, start }: Input): number => {
         return acc + (isCycle ? 1 : 0);
     }, 0);
 };
+
+const processedInput = processData(rawData);
+
+const result = solution(processedInput);
+console.log('Result: ', result);
