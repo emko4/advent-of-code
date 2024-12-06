@@ -6,6 +6,8 @@ type Position = { x: number; y: number };
 
 type Input = { map: Map; start: Position };
 
+type Path = { id: string; position: Position; direction: Direction }[];
+
 export const processData = (data: Buffer): Input => {
     let start: Position;
     const map = data
@@ -65,8 +67,8 @@ const getPositionWithDirectionString = ({ x, y }: Position, [directionX, directi
     return `${x},${y}[${directionX},${directionY}]`;
 };
 
-const getVisitedPlaces = (map: Map, start: Position, direction: Direction): Set<string> => {
-    const visitedPlaces = new Set<string>([getPositionString(start)]);
+const getVisitedPlaces = (map: Map, start: Position, direction: Direction): Path => {
+    const visitedPlaces: Path = [{ id: getPositionString(start), position: start, direction }];
     let currentPosition = start;
     let currentDirection = direction;
 
@@ -82,7 +84,10 @@ const getVisitedPlaces = (map: Map, start: Position, direction: Direction): Set<
             continue;
         }
 
-        visitedPlaces.add(getPositionString(newPosition));
+        const newPositionString = getPositionString(newPosition);
+        if (!visitedPlaces.find(({ id }) => id === newPositionString)) {
+            visitedPlaces.push({ id: newPositionString, position: newPosition, direction: currentDirection });
+        }
         currentPosition = newPosition;
     }
 
@@ -118,11 +123,16 @@ export const solution = ({ map, start }: Input): number => {
     const northDirection: Direction = [0, -1];
 
     const visitedPlaces = getVisitedPlaces(map, start, northDirection);
+    // console.log('[DEV]', visitedPlaces);
+    return visitedPlaces.reduce((acc, { position }, index) => {
+        const { x, y } = position;
+        // I can start from previous position for every obstacle
+        const { position: previousPosition, direction: previousDirection } = visitedPlaces[index - 1] || {
+            position: start,
+            direction: northDirection,
+        };
 
-    return visitedPlaces.values().reduce((acc, position) => {
-        const [x, y] = position.split(',').map(Number);
-
-        const isCycle = isCycleWithAddedObstacle(map, start, northDirection, { x, y });
+        const isCycle = isCycleWithAddedObstacle(map, previousPosition, previousDirection, { x, y });
 
         return acc + (isCycle ? 1 : 0);
     }, 0);
