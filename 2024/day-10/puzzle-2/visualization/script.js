@@ -9,7 +9,7 @@ const LINE_WIDTH = 1;
 function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-// let currentStep = 0;
+
 const NEIGHBORS = [
     [0, -1],
     [1, 0],
@@ -133,13 +133,6 @@ function highlightCell(x, y, color) {
 }
 
 function animatePath() {
-    // if (currentStep < path.length) {
-    //     const { x, y } = path[currentStep];
-    //     highlightCell(x, y, 'blue');
-    //     currentStep++;
-    //     console.log('[DEV]', x, y);
-    //     setTimeout(animatePath, 500);
-    // }
     starts.forEach((start) => {
         getCountOfPaths(map, start);
     });
