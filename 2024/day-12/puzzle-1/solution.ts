@@ -75,7 +75,7 @@ const floodThemAll = (map: Map) => {
                     const neighborLetter = map?.[neighbor.y]?.[neighbor.x];
                     const neighborString = getPositionString(neighbor);
 
-                    if (neighborLetter !== letter && !fencePositions.has(neighborString)) {
+                    if (neighborLetter !== letter) {
                         fencePositions.add(neighborString);
                     }
 
