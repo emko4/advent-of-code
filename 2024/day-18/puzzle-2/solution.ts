@@ -1,14 +1,17 @@
+import * as path from 'node:path';
+
 type Position = { x: number; y: number };
 type Direction = [-1 | 0 | 1, -1 | 0 | 1];
 type Node = '.' | '#';
 type Map = Node[][];
 
-type QueueItem = { position: Position; distance: number };
+type QueueItem = { position: Position; distance: number; path: Position[] };
+type FindOutput = { distance: number; path: Position[] };
 
 type Input = { map: Map; positions: Position[] };
 
-const MEMORY_SIZE = 7;
-const BYTE_COUNT = 12;
+const MEMORY_SIZE = 71;
+const BYTE_COUNT = 1024;
 
 const NEIGHBORS: Direction[] = [
     [0, -1],
@@ -49,14 +52,14 @@ const isOutsideOfMap = (map: Map, { x, y }: Position): boolean => {
     return x < 0 || x >= map[0].length || y < 0 || y >= map.length;
 };
 
-const findShortestPath = (map: Map, start: Position) => {
-    const queue: QueueItem[] = [{ position: start, distance: 0 }];
+const findShortestPath = (map: Map, start: Position): FindOutput => {
+    const queue: QueueItem[] = [{ position: start, distance: 0, path: [start] }];
     const visited: Set<string> = new Set();
     const distances: Record<string, number> = { [getPositionString(start)]: 0 };
 
     while (queue.length > 0) {
         queue.sort((a, b) => a.distance - b.distance);
-        const { position: currentPosition, distance } = queue.shift();
+        const { position: currentPosition, distance, path } = queue.shift();
 
         const currentPositionString = getPositionString(currentPosition);
 
@@ -64,7 +67,7 @@ const findShortestPath = (map: Map, start: Position) => {
         visited.add(currentPositionString);
 
         if (currentPosition.x === MEMORY_SIZE - 1 && currentPosition.y === MEMORY_SIZE - 1) {
-            return distance;
+            return { distance, path };
         }
 
         NEIGHBORS.forEach(([dx, dy]) => {
@@ -77,24 +80,31 @@ const findShortestPath = (map: Map, start: Position) => {
                 map[newPosition.y][newPosition.x] !== '#' &&
                 newDistance < (distances[newPositionString] || Infinity)
             ) {
-                queue.push({ position: newPosition, distance: newDistance });
+                distances[newPositionString] = newDistance;
+                queue.push({ position: newPosition, distance: newDistance, path: [...path, newPosition] });
             }
         });
     }
 
-    return Infinity;
+    return { distance: Infinity, path: [] };
 };
 
 export const solution = ({ map, positions }: Input): string => {
+    const usedPositions = new Set<string>();
     for (let i = BYTE_COUNT; i < positions.length; i++) {
         const { x, y } = positions[i];
         map[y][x] = '#';
 
-        const result = findShortestPath(map, { x: 0, y: 0 });
+        // after first path is found, we check of next byte is in used positions
+        if (usedPositions.size > 0 && !usedPositions.has(getPositionString(positions[i]))) continue;
 
-        if (result === Infinity) {
+        const { distance, path } = findShortestPath(map, { x: 0, y: 0 });
+
+        if (distance === Infinity) {
             return `${x},${y}`;
         }
+
+        path.forEach((p) => usedPositions.add(getPositionString(p)));
     }
 
     printMap(map);
