@@ -49,7 +49,7 @@ const isOutsideOfMap = (map: Map, { x, y }: Position): boolean => {
     return x < 0 || x >= map[0].length || y < 0 || y >= map.length;
 };
 
-const findShortestPath = (map: Map, start: Position) => {
+const findShortestPath = (map: Map, start: Position): number => {
     const queue: QueueItem[] = [{ position: start, distance: 0 }];
     const visited: Set<string> = new Set();
     const distances: Record<string, number> = { [getPositionString(start)]: 0 };
@@ -77,6 +77,7 @@ const findShortestPath = (map: Map, start: Position) => {
                 map[newPosition.y][newPosition.x] !== '#' &&
                 newDistance < (distances[newPositionString] || Infinity)
             ) {
+                distances[newPositionString] = newDistance;
                 queue.push({ position: newPosition, distance: newDistance });
             }
         });
