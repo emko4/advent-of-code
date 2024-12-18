@@ -6,7 +6,7 @@ type Node = '.' | '#';
 type Map = Node[][];
 
 type QueueItem = { position: Position; distance: number; path: Position[] };
-type FindOutput = { distance: number; path: Position[] };
+type FindOutput = { distance: number; path: Set<string> };
 
 type Input = { map: Map; positions: Position[] };
 
@@ -40,10 +40,6 @@ export const processData = (data: Buffer): Input => {
     return { map, positions };
 };
 
-const printMap = (map: Map) => {
-    console.log(map.map((l) => l.join('')).join('\n'));
-};
-
 const getPositionString = ({ x, y }: Position): string => {
     return x + ',' + y;
 };
@@ -67,7 +63,7 @@ const findShortestPath = (map: Map, start: Position): FindOutput => {
         visited.add(currentPositionString);
 
         if (currentPosition.x === MEMORY_SIZE - 1 && currentPosition.y === MEMORY_SIZE - 1) {
-            return { distance, path };
+            return { distance, path: new Set(path.map(getPositionString)) };
         }
 
         NEIGHBORS.forEach(([dx, dy]) => {
@@ -86,17 +82,18 @@ const findShortestPath = (map: Map, start: Position): FindOutput => {
         });
     }
 
-    return { distance: Infinity, path: [] };
+    return { distance: Infinity, path: new Set<string>() };
 };
 
 export const solution = ({ map, positions }: Input): string => {
-    const usedPositions = new Set<string>();
+    let lastPath: Set<string> = null;
     for (let i = BYTE_COUNT; i < positions.length; i++) {
         const { x, y } = positions[i];
         map[y][x] = '#';
 
-        // after first path is found, we check of next byte is in used positions
-        if (usedPositions.size > 0 && !usedPositions.has(getPositionString(positions[i]))) continue;
+        // after first path is found, we check of next byte is in the last path
+        // if not we assume the path is still free
+        if (lastPath && !lastPath.has(getPositionString({ x, y }))) continue;
 
         const { distance, path } = findShortestPath(map, { x: 0, y: 0 });
 
@@ -104,10 +101,8 @@ export const solution = ({ map, positions }: Input): string => {
             return `${x},${y}`;
         }
 
-        path.forEach((p) => usedPositions.add(getPositionString(p)));
+        lastPath = path;
     }
-
-    printMap(map);
 
     return '0,0';
 };
