@@ -1,3 +1,4 @@
+// helped
 type Map = string[][];
 type Position = { x: number; y: number };
 type Direction = [-1 | 0 | 1, -1 | 0 | 1];
