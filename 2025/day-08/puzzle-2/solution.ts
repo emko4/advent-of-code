@@ -29,7 +29,7 @@ export const solution = (input: Box[]): number => {
     const usedBoxes = new Set<number>();
     let circuits: Set<number>[] = [];
     let result = 0;
-    while (usedBoxes.size < input.length) {
+    while (usedBoxes.size < input.length || circuits.length > 1) {
         const [boxA, , boxB] = sortedEdges.shift();
         result = input[boxA][0] * input[boxB][0];
 

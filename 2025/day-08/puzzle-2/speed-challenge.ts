@@ -32,7 +32,7 @@ const solution = (input: Box[]): number => {
     let lastBoxA = 0;
     let lastBoxB = 0;
 
-    for (let step = 0; step < boxCount; step += 1) {
+    while (!inTree.every((v) => v)) {
         let vertex = -1;
         let smallestDistance = Infinity;
 
@@ -45,7 +45,7 @@ const solution = (input: Box[]): number => {
 
         inTree[vertex] = true;
 
-        if (parent[vertex] !== -1) {
+        if (!inTree.every((v) => v)) {
             lastBoxA = parent[vertex];
             lastBoxB = vertex;
         }
