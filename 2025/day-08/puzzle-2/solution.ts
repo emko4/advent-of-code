@@ -7,8 +7,13 @@ export const processData = (data: Buffer): Box[] => {
         .map((line) => line.split(',').map(Number) as Box);
 };
 
-const getDistance = ([x1, y1, z1]: Box, [x2, y2, z2]: Box): number =>
-    Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2) + Math.pow(z1 - z2, 2));
+const getDistance = ([x1, y1, z1]: Box, [x2, y2, z2]: Box): number => {
+    const dx = x1 - x2;
+    const dy = y1 - y2;
+    const dz = z1 - z2;
+
+    return dx * dx + dy * dy + dz * dz;
+};
 
 export const solution = (input: Box[]): number => {
     const edges: [number, number, number][] = [];
