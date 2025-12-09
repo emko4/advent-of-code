@@ -36,12 +36,12 @@ const isInside = (position: Position, edges: Position[][]): boolean => {
         }
     }
 
-    // position is inside if intersectionCount is odd number
+    // position is inside if intersectionCount is an odd number
     return intersectionCount % 2 === 1;
 };
 
-const isHorizontal = ([[x1, y1], [x2, y2]]: Segment) => x1 === x2;
-const isVertical = ([[x1, y1], [x2, y2]]: Segment) => y1 === y2;
+const isHorizontal = ([[x1], [x2]]: Segment) => x1 === x2;
+const isVertical = ([[, y1], [, y2]]: Segment) => y1 === y2;
 
 const hasIntersection = (edge1: Segment, edge2: Segment): boolean => {
     if (isHorizontal(edge1) && isHorizontal(edge2)) return false;
