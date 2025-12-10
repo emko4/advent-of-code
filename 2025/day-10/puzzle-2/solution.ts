@@ -54,37 +54,34 @@ export const processData = (data: Buffer): Machine[] => {
         });
 };
 
+const STEP_PREFIX = 'step';
+const OPTIMISATION_PROPERTY = 'cost';
+
 const solveMachine = async (machine: Machine): Promise<number> => {
-    const joltages: Joltages = machine.joltage.reduce((acc, j, index) => ({ ...acc, [`a${index}`]: j }), {});
+    const joltages: Joltages = machine.joltage.reduce(
+        (acc, j, index) => ({ ...acc, [`${STEP_PREFIX}${index}`]: j }),
+        {},
+    );
     const steps: Step[] = machine.steps.map((step, index) => ({
         id: index,
         name: step,
-        cost: 1,
-        affects: step.split('').map((s) => `a${s}`),
+        [OPTIMISATION_PROPERTY]: 1,
+        affects: step.split('').map((s) => `${STEP_PREFIX}${s}`),
     }));
 
     const model: LPModel = {
-        optimize: 'cost',
+        optimize: OPTIMISATION_PROPERTY,
         opType: 'min',
-        constraints: {},
-        variables: {},
-        ints: {},
+        constraints: Object.keys(joltages).reduce((acc, key) => ({ ...acc, [key]: { equal: joltages[key] } }), {}),
+        variables: steps.reduce((acc, step) => {
+            const variableDefinition = step.affects.reduce((affectsAcc, affect) => ({ ...affectsAcc, [affect]: 1 }), {
+                [OPTIMISATION_PROPERTY]: step[OPTIMISATION_PROPERTY],
+            });
+
+            return { ...acc, [step.name]: variableDefinition };
+        }, {}),
+        ints: steps.reduce((acc, step) => ({ ...acc, [step.name]: 1 }), {}),
     };
-
-    Object.keys(joltages).forEach((key) => {
-        model.constraints[key] = { equal: joltages[key] };
-    });
-
-    steps.forEach((step) => {
-        const variableDefinition = { cost: step.cost };
-
-        step.affects.forEach((a) => {
-            variableDefinition[a] = 1;
-        });
-
-        model.variables[step.name] = variableDefinition;
-        model.ints[step.name] = 1;
-    });
 
     const result: Result = Solver.Solve(model);
 
