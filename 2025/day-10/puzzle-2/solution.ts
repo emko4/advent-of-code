@@ -92,7 +92,7 @@ export const solution = async (machines: Machine[]): Promise<number> => {
     let result = 0;
 
     for (let i = 0; i < machines.length; i += 1) {
-        console.log(`Machine ${i + 1}/${machines.length} result: ${result}`);
+        console.log(`Solving machine ${i + 1}/${machines.length}`);
         result += await solveMachine(machines[i]);
     }
 
