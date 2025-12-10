@@ -45,49 +45,57 @@ const isJoltageInRange = (state: string, joltage: number[]): boolean => {
 
 type QueueItem = {
     state: string;
-    path: string[];
+    pathCounter: number;
+    heuristic: number;
 };
 
+function heuristicFunction(state: string, target: string, maxCover: number): number {
+    let remainIncrements = 0;
+    const stateArray = state.split(',');
+    const targetArray = target.split(',');
+
+    for (let i = 0; i < targetArray.length; i++) remainIncrements += Number(targetArray[i]) - Number(stateArray[i]);
+
+    return Math.ceil(remainIncrements / maxCover);
+}
+
 const solveMachine = (machine: Machine): number => {
-    const graph: Record<string, Set<string>> = {};
+    const { steps, joltage } = machine;
 
-    const startState = Array(machine.joltage.length).fill('0').join(',');
+    const startState = Array(joltage.length).fill('0').join(',');
+    const finalJoltage = joltage.join(',');
 
-    console.log('[DEV]', 'Building graph');
-    const queueGraph: string[] = [startState];
-    while (queueGraph.length > 0) {
-        const state = queueGraph.shift();
+    const coverage = steps.map((b) => b.split('').reduce((acc, x) => (Number(x) === 0 ? acc : acc + 1), 0));
+    const maxCover = Math.max(...coverage);
 
-        const nextStates: string[] = machine.steps.reduce((acc, step) => {
-            const nextState = getNextState(state, step);
-
-            if (!isJoltageInRange(nextState, machine.joltage)) return acc;
-
-            if (!graph[nextState] && !queueGraph.includes(nextState)) queueGraph.push(nextState);
-
-            return [...acc, nextState];
-        }, []);
-
-        graph[state] = new Set<string>(nextStates);
-    }
-
-    console.log('[DEV]', 'Find shortest path');
-    const queue: QueueItem[] = [{ state: startState, path: [] }];
-    const visited: Set<string> = new Set();
-    const finalJoltage = machine.joltage.join(',');
+    const queue: QueueItem[] = [
+        { state: startState, pathCounter: 0, heuristic: heuristicFunction(startState, finalJoltage, maxCover) },
+    ];
+    const cache: Record<string, number> = { [startState]: 0 };
 
     while (queue.length > 0) {
-        const { state, path } = queue.shift();
+        queue.sort((a, b) => a.heuristic - b.heuristic);
+        const { state, pathCounter } = queue.shift();
 
-        if (state === finalJoltage) return path.length;
+        if (state === finalJoltage) return pathCounter;
 
-        if (visited.has(state)) continue;
-        visited.add(state);
+        for (const step of steps) {
+            const nextState = getNextState(state, step);
 
-        const neighbors = graph[state];
-        neighbors.forEach((nextState) => {
-            queue.push({ state: nextState, path: [...path, nextState] });
-        });
+            if (!isJoltageInRange(nextState, joltage)) continue;
+
+            const newPathCounter = pathCounter + 1;
+
+            if (!cache[nextState] || cache[nextState] > newPathCounter) {
+                cache[nextState] = newPathCounter;
+
+                queue.push({
+                    state: nextState,
+                    pathCounter: newPathCounter,
+                    heuristic: newPathCounter + heuristicFunction(nextState, finalJoltage, maxCover),
+                });
+            }
+        }
     }
 
     return 0;
