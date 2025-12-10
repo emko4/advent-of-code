@@ -6,10 +6,12 @@ const exampleData = fs.readFileSync(__dirname + '/example-input.txt');
 const exampleResult = fs.readFileSync(__dirname + '/example-result.txt');
 
 describe('Puzzle 2 from day 10 of the year 2025', () => {
-    it('returns same result as AoC example result', () => {
+    it('returns same result as AoC example result', async () => {
         const input = processData(exampleData);
         const result = exampleResult.toString();
 
-        expect(solution(input).toString()).toStrictEqual(result);
+        const expected = (await solution(input)).toString();
+
+        expect(expected).toStrictEqual(result);
     });
 });

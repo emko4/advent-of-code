@@ -1,8 +1,33 @@
+// Inspired by Oliver's solution
+// https://github.com/olivers-x/advent-of-code/blob/main/2025/10/part2.mjs
+
+import Solver from 'javascript-lp-solver';
+
 type Machine = {
     state: string;
     steps: string[];
     joltage: number[];
 };
+
+type Step = {
+    id: number;
+    name: string;
+    cost: number;
+    affects: string[];
+};
+
+type Joltages = Record<string, number>;
+
+type ConstraintKey = 'min' | 'max' | 'equal';
+type LPModel = {
+    optimize: string;
+    opType: 'min' | 'max';
+    constraints: Record<string, Partial<Record<ConstraintKey, number>>>;
+    variables: Record<string, Record<string, number>>;
+    ints: Record<string, number>;
+};
+
+type Result = { result: number };
 
 export const processData = (data: Buffer): Machine[] => {
     return data
@@ -29,81 +54,50 @@ export const processData = (data: Buffer): Machine[] => {
         });
 };
 
-const getNextState = (state: string, step: string) => {
-    const stateArray = state.split(',').map(Number);
+const solveMachine = async (machine: Machine): Promise<number> => {
+    const joltages: Joltages = machine.joltage.reduce((acc, j, index) => ({ ...acc, [`a${index}`]: j }), {});
+    const steps: Step[] = machine.steps.map((step, index) => ({
+        id: index,
+        name: step,
+        cost: 1,
+        affects: step.split('').map((s) => `a${s}`),
+    }));
 
-    step.split('').forEach((s) => {
-        stateArray[Number(s)] += 1;
+    const model: LPModel = {
+        optimize: 'cost',
+        opType: 'min',
+        constraints: {},
+        variables: {},
+        ints: {},
+    };
+
+    Object.keys(joltages).forEach((key) => {
+        model.constraints[key] = { equal: joltages[key] };
     });
 
-    return stateArray.join(',');
+    steps.forEach((step) => {
+        const variableDefinition = { cost: step.cost };
+
+        step.affects.forEach((a) => {
+            variableDefinition[a] = 1;
+        });
+
+        model.variables[step.name] = variableDefinition;
+        model.ints[step.name] = 1;
+    });
+
+    const result: Result = Solver.Solve(model);
+
+    return result.result;
 };
 
-const isJoltageInRange = (state: string, joltage: number[]): boolean => {
-    return state.split(',').every((s, index) => Number(s) <= joltage[index]);
-};
+export const solution = async (machines: Machine[]): Promise<number> => {
+    let result = 0;
 
-type QueueItem = {
-    state: string;
-    pathCounter: number;
-    heuristic: number;
-};
-
-function heuristicFunction(state: string, target: string, maxCover: number): number {
-    let remainIncrements = 0;
-    const stateArray = state.split(',');
-    const targetArray = target.split(',');
-
-    for (let i = 0; i < targetArray.length; i++) remainIncrements += Number(targetArray[i]) - Number(stateArray[i]);
-
-    return Math.ceil(remainIncrements / maxCover);
-}
-
-const solveMachine = (machine: Machine): number => {
-    const { steps, joltage } = machine;
-
-    const startState = Array(joltage.length).fill('0').join(',');
-    const finalJoltage = joltage.join(',');
-
-    const coverage = steps.map((b) => b.split('').reduce((acc, x) => (Number(x) === 0 ? acc : acc + 1), 0));
-    const maxCover = Math.max(...coverage);
-
-    const queue: QueueItem[] = [
-        { state: startState, pathCounter: 0, heuristic: heuristicFunction(startState, finalJoltage, maxCover) },
-    ];
-    const cache: Record<string, number> = { [startState]: 0 };
-
-    while (queue.length > 0) {
-        queue.sort((a, b) => a.heuristic - b.heuristic);
-        const { state, pathCounter } = queue.shift();
-
-        if (state === finalJoltage) return pathCounter;
-
-        for (const step of steps) {
-            const nextState = getNextState(state, step);
-
-            if (!isJoltageInRange(nextState, joltage)) continue;
-
-            const newPathCounter = pathCounter + 1;
-
-            if (!cache[nextState] || cache[nextState] > newPathCounter) {
-                cache[nextState] = newPathCounter;
-
-                queue.push({
-                    state: nextState,
-                    pathCounter: newPathCounter,
-                    heuristic: newPathCounter + heuristicFunction(nextState, finalJoltage, maxCover),
-                });
-            }
-        }
+    for (let i = 0; i < machines.length; i += 1) {
+        console.log(`Machine ${i + 1}/${machines.length} result: ${result}`);
+        result += await solveMachine(machines[i]);
     }
 
-    return 0;
-};
-
-export const solution = (machines: Machine[]): number => {
-    return machines.reduce((acc, machine, index) => {
-        console.log('[DEV]', `Solving machine ${index + 1}/${machines.length}`);
-        return acc + solveMachine(machine);
-    }, 0);
+    return result;
 };

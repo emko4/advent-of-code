@@ -7,6 +7,6 @@ const rawData = fs.readFileSync(__dirname + '/../input.txt');
 const processedInput = processData(rawData);
 
 console.time('Runtime');
-const result = solution(processedInput);
+const result = await solution(processedInput);
 console.timeEnd('Runtime');
 console.log('Result: ', result);
